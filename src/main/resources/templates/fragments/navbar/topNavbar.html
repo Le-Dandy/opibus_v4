@@ -1,0 +1,18 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<div th:replace="fragments/navbar/topNavbarBrand"></div>
+
+<div class="collapse navbar-collapse" id="navbarScroll">
+
+  <ul class="navbar-nav me-auto my-2 my-lg-0 navbar-nav-scroll" style="--bs-scroll-height: 100px;">
+    <div th:replace="fragments/navbar/topNavbarRow1"></div>
+    <div th:replace="fragments/navbar/topNavbarRow2"></div>
+  </ul>
+
+  <div th:replace="fragments/navbar/TopNavbarSearch"></div>
+
+  <div th:replace="fragments/navbar/topNavbarUser"></div>
+
+  <div th:replace="fragments/navbar/topNavbarLogout"></div>
+</div>
+

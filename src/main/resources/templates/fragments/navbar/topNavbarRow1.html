@@ -1,0 +1,50 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+  <div th:if="${PageDefaultBuilder.navBar.active1 == true}">
+    <div th:if="${PageDefaultBuilder.navBar.dropDown1} == null">
+      <li class="nav-item">
+        <a class="nav-link active" aria-current="page" th:href="${PageDefaultBuilder.navBar.title1.href}" th:text="${PageDefaultBuilder.navBar.title1.text}"></a>
+      </li>
+    </div>
+    <div th:if="${PageDefaultBuilder.navBar.dropDown1} != null">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle active"  securityRole="button" data-bs-toggle="dropdown" aria-expanded="false" th:href="${PageDefaultBuilder.navBar.title1.href}" th:text="${PageDefaultBuilder.navBar.title1.text}"></a>
+        <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+          <li><a class="dropdown-item" href="#">Action</a></li>
+          <li>
+            <div th:each="dropdown: ${PageDefaultBuilder.navBar.dropDown1}">
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" th:href="${dropdown.href}" th:text="${dropdown.text}"/>
+            </div>
+          </li>
+
+        </ul>
+      </li>
+    </div>
+
+
+  </div>
+  <div th:if="${PageDefaultBuilder.navBar.active1 != true}">
+    <div th:if="${PageDefaultBuilder.navBar.dropDown1} == null">
+      <li class="nav-item">
+        <a class="nav-link" th:href="${PageDefaultBuilder.navBar.title1.href}" th:text="${PageDefaultBuilder.navBar.title1.text}"></a>
+      </li>
+    </div>
+    <div th:if="${PageDefaultBuilder.navBar.dropDown1} != null">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle"  securityRole="button" data-bs-toggle="dropdown" aria-expanded="false" th:href="${PageDefaultBuilder.navBar.title1.href}" th:text="${PageDefaultBuilder.navBar.title1.text}"></a>
+        <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+          <li><a class="dropdown-item" href="#">Action</a></li>
+          <li>
+            <div th:each="dropdown: ${PageDefaultBuilder.navBar.dropDown1}">
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" th:href="${dropdown.href}" th:text="${dropdown.text}"/>
+            </div>
+          </li>
+
+        </ul>
+      </li>
+    </div>
+
+
+  </div>

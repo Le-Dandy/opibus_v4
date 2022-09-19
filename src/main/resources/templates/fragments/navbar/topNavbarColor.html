@@ -1,0 +1,14 @@
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+
+<div>
+  <div th:if="${PageDefaultBuilder.settings.color.color == 'dark'}">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div th:replace="fragments/navbar/topNavbar"></div>
+    </nav>
+  </div>
+  <div th:if="${PageDefaultBuilder.settings.color.color == 'light'}">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div th:replace="fragments/navbar/topNavbar"></div>
+    </nav>
+  </div>
+</div>

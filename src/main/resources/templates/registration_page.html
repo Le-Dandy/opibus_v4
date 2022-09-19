@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+</head>
+<body>
+<div class="container-fluid">
+    <form id="partner" th:action="@{/register/submit}" th:object="${page.partner}" method = "POST">
+        <div class = "col-lg-6 col-md-6 col-sm-6 container justify-content-center card">
+            <div class = "AppUser">
+                <div class = "row">
+                    <H5 th:text="${page.partner.appUserTitle.text}"></H5>
+                </div>
+                <div class = "row">
+                    <label class="label" th:text="${page.partner.userName.text}">First name</label>
+                    <input type="text" class="input"  required="required" th:field="*{appUser.username}" th:placeholder="${page.partner.userName.placeHolder}" th:description="${page.partner.userName.placeHolder}" >
+                </div>
+                <div class = "row">
+                    <label class="label" th:text="${page.partner.password.text}">First name</label>
+                    <input type="password" class="input"  required="required" th:field="*{appUser.password}" th:placeholder="${page.partner.password.placeHolder}" th:description="${page.partner.password.placeHolder}" >
+                </div>
+            </div>
+            <div class = "Partner Header">
+                <div class = "row">
+                    <H5 th:text="${page.partner.partnerHeaderTitle.text}"></H5>
+                </div>
+                <div class = "row">
+                    <label class="label" th:text="${page.partner.firstName.text}">First name</label>
+                    <input type="text" class="input"  required="required" th:field="*{partner.userHead.firstName}" th:placeholder="${page.partner.firstName.placeHolder}" th:description="${page.partner.firstName.placeHolder}" >
+                </div>
+                <div class = "row">
+                    <label class="label" th:text="${page.partner.middleName.text}">First name</label>
+                    <input type="text" class="input"  required="required" th:field="*{partner.userHead.middleName}" th:placeholder="${page.partner.middleName.placeHolder}" th:description="${page.partner.middleName.placeHolder}" >
+                </div>
+                <div class = "row">
+                    <label class="label" th:text="${page.partner.lastName.text}">First name</label>
+                    <input type="text" class="input"  required="required" th:field="*{partner.userHead.lastName}" th:placeholder="${page.partner.lastName.placeHolder}" th:description="${page.partner.lastName.placeHolder}" >
+                </div>
+                <div class = "row">
+                    <label class="label" th:text="${page.partner.email.text}">First name</label>
+                    <input type="text" class="input"  required="required" th:field="*{partner.userHead.email}" th:placeholder="${page.partner.email.placeHolder}" th:description="${page.partner.email.placeHolder}" >
+                </div>
+            </div>
+
+            <div class = "row">
+                <input type="submit" class="button" form="partner">
+            </div>
+
+
+
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
