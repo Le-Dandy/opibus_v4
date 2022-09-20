@@ -32,10 +32,18 @@ public class WebAPILoginController {
     @RequestMapping("/loginSuccess")
     private String redirectLogin(Principal principal){
 
+        try{
 
-        String prefix = securityService.getPrefix(principal);
+            String prefix = securityService.getPrefix(principal);
 
-        return "redirect:" + prefix + "/main";
+            return "redirect:" + prefix + "/main";
+
+        } catch (Exception e) {
+
+            return "redirect:login";
+
+        }
+
     }
 
 }

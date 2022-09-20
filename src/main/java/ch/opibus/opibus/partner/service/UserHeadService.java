@@ -1,5 +1,6 @@
 package ch.opibus.opibus.partner.service;
 
+import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.error.model.Error;
 import ch.opibus.opibus.partner.crud.UserHeadRep;
 import ch.opibus.opibus.partner.dao.UserHead;
@@ -29,7 +30,7 @@ public class UserHeadService {
         return exists;
     }
 
-    public UserHead create(UserHead userHead) throws Error{
+    public UserHead create(UserHead userHead) throws DBError {
 
         try {
 
@@ -37,7 +38,7 @@ public class UserHeadService {
 
         } catch (Exception e) {
 
-            throw new Error(userHead, userHead.getId());
+            throw new DBError(userHead, userHead.getId());
 
         }
 
@@ -45,7 +46,7 @@ public class UserHeadService {
 
     }
 
-    public void delete(UserHead userHead) throws Error {
+    public void delete(UserHead userHead) throws DBError {
 
         try {
 
@@ -53,13 +54,13 @@ public class UserHeadService {
 
         } catch (Exception e) {
 
-            throw new Error(userHead, userHead.getId());
+            throw new DBError(userHead, userHead.getId());
 
         }
 
     }
 
-    public void save(UserHead userHead) throws Error{
+    public void save(UserHead userHead) throws DBError{
 
         try {
 
@@ -67,7 +68,7 @@ public class UserHeadService {
 
         } catch (Exception e) {
 
-            throw new Error(userHead, userHead.getId());
+            throw new DBError(userHead, userHead.getId());
 
         }
 

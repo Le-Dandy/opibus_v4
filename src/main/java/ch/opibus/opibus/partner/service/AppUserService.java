@@ -1,11 +1,13 @@
 package ch.opibus.opibus.partner.service;
 
+import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.error.model.Error;
 import ch.opibus.opibus.partner.crud.AppUserRep;
 import ch.opibus.opibus.partner.dao.AppUser;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,33 +20,59 @@ public class AppUserService implements UserDetailsService {
 
 
     @Override
-    public UserDetails loadUserByUsername(String username) {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        AppUser user = new AppUser();
+         try {
 
-        try {
-            user = getByUsername(username);
+            AppUser user = get(username);
             user.setGrantedAuthorities(user.getSecurityRole().getGrantedAuthorities());
-        } catch (Error error) {
 
+             return user;
+
+        } catch (DBError error) {
+
+             throw  new UsernameNotFoundException(error.getMessage());
         }
 
-        return user;
+
     }
 
-    private AppUser get(AppUser appUser) throws Error{
+    private AppUser get(AppUser appUser) throws DBError{
 
         try{
 
-            return getByUsername(appUser.getUsername());
+            return get(appUser.getUsername());
 
-        } catch (Error error) {
+        } catch (DBError error) {
 
-            return getByUsername(appUser.getEmail());
+            return get(appUser.getEmail());
         }
     }
 
-    public AppUser getByUsername(String username) throws Error{
+    public AppUser get(String userName) throws DBError {
+
+        try{
+
+            return dB.findByUserName(userName).get();
+
+        } catch (Exception e) {
+
+            try {
+
+                return dB.findByEmail(userName).get();
+
+            } catch (Exception error) {
+
+                throw new DBError(new AppUser());
+
+            }
+
+        }
+
+    }
+
+    /*
+    public AppUser getByUsername(String username) throws DBError{
 
         try{
 
@@ -52,14 +80,23 @@ public class AppUserService implements UserDetailsService {
 
         } catch (Exception e) {
 
+            try {
 
-            return dB.findByEmail(username).orElseThrow(() -> new Error("userName", 1));
+                return dB.findByEmail(username).get();
+
+            } catch (Exception error) {
+
+                throw new DBError(new AppUser());
+
+            }
 
         }
 
     }
 
-    private void delete(AppUser appUser) throws Error {
+     */
+
+    private void delete(AppUser appUser) throws DBError {
 
         try{
 
@@ -67,11 +104,11 @@ public class AppUserService implements UserDetailsService {
 
         } catch(Exception e) {
 
-            throw new Error(appUser, appUser.getId() );
+            throw new DBError(appUser, appUser.getId() );
         }
     }
 
-    public AppUser create(AppUser appUser) throws Error{
+    public AppUser create(AppUser appUser) throws DBError{
 
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
 
@@ -81,7 +118,7 @@ public class AppUserService implements UserDetailsService {
 
         } catch (Exception e) {
 
-            throw new Error(appUser, appUser.getId() );
+            throw new DBError(appUser, appUser.getId() );
 
         }
 
@@ -93,9 +130,9 @@ public class AppUserService implements UserDetailsService {
 
         try {
 
-            return getByUsername(name).getSecurityRole().getUrlPrefix();
+            return get(name).getSecurityRole().getUrlPrefix();
 
-        } catch (Error error) {
+        } catch (DBError error) {
 
             return "";
 
@@ -121,7 +158,7 @@ public class AppUserService implements UserDetailsService {
     }
 
 
-    public void save(AppUser appUser) throws Error {
+    public void save(AppUser appUser) throws DBError {
 
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
 
@@ -131,7 +168,7 @@ public class AppUserService implements UserDetailsService {
 
         } catch (Exception e) {
 
-            throw new Error(appUser, appUser.getId() );
+            throw new DBError(appUser, appUser.getId() );
 
         }
     }

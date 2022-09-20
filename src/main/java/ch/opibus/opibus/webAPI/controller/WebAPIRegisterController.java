@@ -1,5 +1,6 @@
 package ch.opibus.opibus.webAPI.controller;
 
+import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.error.model.Error;
 import ch.opibus.opibus.error.model.TranslationError;
 import ch.opibus.opibus.partner.dao.AppUser;
@@ -44,8 +45,22 @@ public class WebAPIRegisterController {
     @PostMapping("/register/submit")
     private String saveRegistration(Model model, Partner partner) {
 
+        try{
+            webService.save(partner);
 
-        return "registration_page";
+            return "validation_page";
+
+        } catch (DBError error) {
+
+            if(error.getType() == 2 ){
+                return "redirect:/register";
+            } else {
+                return "error";
+            }
+        }
+
+
+
     }
 
 }

@@ -1,5 +1,6 @@
 package ch.opibus.opibus.partner.service;
 
+import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.error.model.Error;
 import ch.opibus.opibus.partner.crud.PartnerSettingsRep;
 import ch.opibus.opibus.partner.dao.PartnerSettings;
@@ -14,7 +15,7 @@ public class PartnerSettingsService {
 
     private final PartnerSettingsRep dB;
 
-    public PartnerSettings get(Partner partner) {
+    public PartnerSettings get(Partner partner) throws DBError {
 
         try{
 
@@ -22,13 +23,13 @@ public class PartnerSettingsService {
 
         } catch (Exception e) {
 
-        }
+            throw  new DBError(partner, partner.getId());
 
-        return new PartnerSettings();
+        }
 
     }
 
-    public void create(PartnerSettings partnerSettings) throws Error {
+    public void create(PartnerSettings partnerSettings) throws DBError {
 
         try{
 
@@ -36,14 +37,14 @@ public class PartnerSettingsService {
 
         } catch (Exception e) {
 
-            throw new Error(partnerSettings, partnerSettings.getId());
+            throw new DBError(partnerSettings, partnerSettings.getId());
 
         }
 
 
     }
 
-    public void save(PartnerSettings partnerSettings) throws Error  {
+    public void save(PartnerSettings partnerSettings) throws DBError  {
 
         try{
 
@@ -51,7 +52,8 @@ public class PartnerSettingsService {
 
         } catch (Exception e) {
 
-            throw new Error(partnerSettings, partnerSettings.getId());
+                throw new DBError(partnerSettings, partnerSettings.getId());
+
 
         }
     }

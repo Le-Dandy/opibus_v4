@@ -1,8 +1,10 @@
 package ch.opibus.opibus.webAPI.service;
 
+import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.error.model.TranslationError;
 import ch.opibus.opibus.partner.dao.AppUser;
 import ch.opibus.opibus.partner.dao.Partner;
+import ch.opibus.opibus.partner.service.PartnerService;
 import ch.opibus.opibus.webAPI.model.WebPageRegister;
 import ch.opibus.opibus.webAPI.model.template.WebTemplateNavigationBar;
 import ch.opibus.opibus.partner.model.PartnerWebTemplateInput;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class WebAPIRegisterService {
 
     private final WebTemplatePartnerInputService partnerInputService;
+    private final PartnerService partnerService;
 
     public WebPageRegister get(AppUser appUser, Partner partner, String language) throws TranslationError {
 
@@ -60,4 +63,14 @@ public class WebAPIRegisterService {
 
     }
 
+    public void save(Partner partner) throws DBError {
+
+        try{
+
+            partnerService.save(partner);
+
+        } catch (DBError error) {
+            throw error;
+        }
+    }
 }

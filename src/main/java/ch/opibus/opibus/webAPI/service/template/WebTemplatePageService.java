@@ -1,5 +1,6 @@
 package ch.opibus.opibus.webAPI.service.template;
 
+import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.error.model.Error;
 import ch.opibus.opibus.webAPI.model.template.WebTemplateNavigationBar;
 import ch.opibus.opibus.partner.dao.PartnerSettings;
@@ -26,29 +27,18 @@ public class WebTemplatePageService {
     
     public WebTemplatePage get(Principal principal, String activeTab){
 
-        AppUser appUser = getAppUser(principal);
-        Partner partner = getPartner(appUser);
-
         try{
-            appUser = appUserService.getByUsername(principal.getName());
+            AppUser appUser = appUserService.get(principal.getName());
+            Partner partner = partnerService.get(appUser);
 
-        } catch (Error error){
+            return new WebTemplatePage(
+                    getNavbar(appUser, activeTab),
+                    partner.getSettings()
+            );
+
+        } catch (DBError error){
 
         }
-
-
-        try{
-
-            partner = partnerService.get(appUser);
-
-        } catch (Error error){
-
-        }
-
-        return new WebTemplatePage(
-                getNavbar(appUser, activeTab),
-                partner.getSettings()
-        );
 
     }
 
@@ -58,7 +48,7 @@ public class WebTemplatePageService {
 
             return partnerService.get(appUser);
 
-        } catch (Error error){
+        } catch (DBError error){
 
             return new Partner();
 

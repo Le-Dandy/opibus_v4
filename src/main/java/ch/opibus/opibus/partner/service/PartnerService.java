@@ -1,5 +1,6 @@
 package ch.opibus.opibus.partner.service;
 
+import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.error.model.Error;
 import ch.opibus.opibus.partner.crud.PartnerRep;
 import ch.opibus.opibus.partner.dao.AppUser;
@@ -17,7 +18,7 @@ public class PartnerService {
     private final PartnerSettingsService partnerSettingsService;
     private final PartnerRep dB;
 
-    public void create(Partner partner, AppUser appUser) throws Error {
+    public void create(Partner partner, AppUser appUser) throws DBError {
 
         if(!appUserService.checkIfExists(appUser)){
 
@@ -33,9 +34,9 @@ public class PartnerService {
 
                 create(appUser.getId(), partner);
 
-            } catch(Error error){
+            } catch(DBError error){
 
-                throw new Error(partner, partner.getId());
+                throw new DBError(partner, partner.getId());
 
             }
 
@@ -48,7 +49,7 @@ public class PartnerService {
 
     }
 
-    private Partner changePartner(AppUser appUser, Partner partner) throws Error {
+    private Partner changePartner(AppUser appUser, Partner partner) throws DBError {
 
         if(appUser.getEmail() != partner.getUserHead().getEmail()){
 
@@ -61,16 +62,16 @@ public class PartnerService {
             appUserService.save(appUser);
             dB.save(partner);
 
-        } catch(Error error){
+        } catch(DBError error){
 
-            throw new Error(partner, partner.getId());
+            throw new DBError(partner, partner.getId());
 
         }
 
         return partner;
     }
 
-    private void create(long id, Partner partner) throws Error {
+    private void create(long id, Partner partner) throws DBError {
 
         partner.setAppUserId(id);
 
@@ -84,17 +85,17 @@ public class PartnerService {
 
                 save(partner);
 
-            } catch(Error error){
+            } catch(DBError error){
 
                 throw error;
 
             }
 
-        } catch(Error error) {
+        } catch(DBError error) {
 
             if(error == null){
 
-                error = new Error(partner, partner.getId());
+                error = new DBError(partner, partner.getId());
 
             }
 
@@ -103,32 +104,27 @@ public class PartnerService {
         }
     }
 
-    private void save(Partner partner) throws Error{
+    public void save(Partner partner) throws DBError{
 
         try{
             dB.save(partner);
-
-        } catch(Exception e){
-
-            throw new Error(partner, partner.getId());
-
-        }
-
-        try {
-
             partnerSettingsService.save(partner.getSettings());
-
-        }catch(Error error){
-
-        }
-
-        try {
-
             userHeadService.save(partner.getUserHead());
 
-        }catch(Error error){
+        } catch(DBError error){
+
+            if(error == null) {
+
+                throw new DBError(partner, partner.getId());
+
+            } else {
+
+                throw error;
+
+            }
 
         }
+
     }
 
     private Partner completeUser(AppUser appUser, Partner partner) {
@@ -182,7 +178,7 @@ public class PartnerService {
 
     }
 
-    public Partner get(AppUser appUser) throws Error {
+    public Partner get(AppUser appUser) throws DBError {
 
         try{
 
@@ -190,7 +186,7 @@ public class PartnerService {
 
         } catch (Exception e) {
 
-            throw new Error(appUser, appUser.getId());
+            throw new DBError(appUser, appUser.getId());
         }
     }
 }
