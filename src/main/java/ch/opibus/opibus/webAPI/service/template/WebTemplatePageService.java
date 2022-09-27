@@ -25,7 +25,7 @@ public class WebTemplatePageService {
     private final PartnerService partnerService;
     private final AppUserService appUserService;
     
-    public WebTemplatePage get(Principal principal, String activeTab){
+    public WebTemplatePage get(Principal principal, String activeTab) throws DBError{
 
         try{
             AppUser appUser = appUserService.get(principal.getName());
@@ -38,10 +38,13 @@ public class WebTemplatePageService {
 
         } catch (DBError error){
 
+            throw error;
+
         }
 
     }
 
+    /*
     private Partner getPartner(AppUser appUser) {
 
         try{
@@ -60,15 +63,17 @@ public class WebTemplatePageService {
 
         try{
 
-            return appUserService.getByUsername(principal.getName());
+            return appUserService.get(principal.getName());
 
-        } catch (Error error){
+        } catch (DBError error){
 
             return new AppUser();
             
         }
 
     }
+
+     */
 
     public WebTemplateNavigationBar getNavbar(AppUser appUser, String activeTab){
 
@@ -77,7 +82,17 @@ public class WebTemplatePageService {
 
     public PartnerSettings getSettings(Partner partner){
 
-        return partnerSettingsService.get(partner);
+        try{
+
+            return partnerSettingsService.get(partner);
+
+        } catch (DBError error){
+
+            return new PartnerSettings();
+
+        }
+
+
     }
 
 }

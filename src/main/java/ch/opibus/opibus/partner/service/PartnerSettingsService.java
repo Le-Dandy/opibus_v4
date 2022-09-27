@@ -1,13 +1,13 @@
 package ch.opibus.opibus.partner.service;
 
 import ch.opibus.opibus.error.model.DBError;
-import ch.opibus.opibus.error.model.Error;
 import ch.opibus.opibus.partner.crud.PartnerSettingsRep;
 import ch.opibus.opibus.partner.dao.PartnerSettings;
 import ch.opibus.opibus.partner.dao.Partner;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static ch.opibus.opibus.partner.dao.ColorSettings.DARK;
 
 @Service
 @AllArgsConstructor
@@ -56,5 +56,30 @@ public class PartnerSettingsService {
 
 
         }
+    }
+
+    public void delete(PartnerSettings settings) throws DBError {
+
+        if(settings.getId() < 0){
+
+            try {
+
+                dB.delete(settings);
+
+            } catch(Exception e) {
+
+                throw new DBError(settings, settings.getId());
+
+            }
+
+        }
+    }
+
+    public PartnerSettings create() {
+
+        PartnerSettings partnerSettings = new PartnerSettings();
+        partnerSettings.setColor(DARK);
+
+        return partnerSettings;
     }
 }

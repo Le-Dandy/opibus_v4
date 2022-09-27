@@ -4,6 +4,7 @@ import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.error.model.Error;
 import ch.opibus.opibus.partner.crud.AppUserRep;
 import ch.opibus.opibus.partner.dao.AppUser;
+import ch.opibus.opibus.partner.dao.Partner;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -37,15 +38,26 @@ public class AppUserService implements UserDetailsService {
 
     }
 
-    private AppUser get(AppUser appUser) throws DBError{
+
+    public AppUser get(AppUser appUser) throws DBError{
 
         try{
 
             return get(appUser.getUsername());
 
-        } catch (DBError error) {
+        } catch (DBError userNameError) {
 
-            return get(appUser.getEmail());
+            try{
+
+                return get(appUser.getEmail());
+
+            } catch (DBError emailError){
+
+                throw new DBError(appUser, appUser.getId());
+
+            }
+
+
         }
     }
 
@@ -53,7 +65,7 @@ public class AppUserService implements UserDetailsService {
 
         try{
 
-            return dB.findByUserName(userName).get();
+            return dB.findByUsername(userName).get();
 
         } catch (Exception e) {
 
@@ -71,41 +83,22 @@ public class AppUserService implements UserDetailsService {
 
     }
 
-    /*
-    public AppUser getByUsername(String username) throws DBError{
+    private void delete(AppUser appUser) throws DBError {
 
-        try{
+        if(appUser.getId() < 0){
 
-            return dB.findByUserName(username).get();
+            try{
 
-        } catch (Exception e) {
+                dB.delete(appUser);
 
-            try {
+            } catch(Exception e) {
 
-                return dB.findByEmail(username).get();
-
-            } catch (Exception error) {
-
-                throw new DBError(new AppUser());
-
+                throw new DBError(appUser, appUser.getId() );
             }
 
         }
 
-    }
 
-     */
-
-    private void delete(AppUser appUser) throws DBError {
-
-        try{
-
-            dB.delete(appUser);
-
-        } catch(Exception e) {
-
-            throw new DBError(appUser, appUser.getId() );
-        }
     }
 
     public AppUser create(AppUser appUser) throws DBError{
@@ -126,7 +119,7 @@ public class AppUserService implements UserDetailsService {
 
     }
 
-    public String getURLPrefixFromUser(String name) {
+    public String getURLPrefixFromUser(String name) throws DBError{
 
         try {
 
@@ -134,7 +127,7 @@ public class AppUserService implements UserDetailsService {
 
         } catch (DBError error) {
 
-            return "";
+            throw error;
 
         }
     }
@@ -157,7 +150,6 @@ public class AppUserService implements UserDetailsService {
 
     }
 
-
     public void save(AppUser appUser) throws DBError {
 
         appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
@@ -169,6 +161,32 @@ public class AppUserService implements UserDetailsService {
         } catch (Exception e) {
 
             throw new DBError(appUser, appUser.getId() );
+
+        }
+    }
+
+    public void delete(long appUserId) throws DBError {
+
+        try{
+
+            dB.delete(dB.getById(appUserId));
+
+        } catch (Exception e){
+
+            throw new DBError(new AppUser(), appUserId);
+
+        }
+    }
+
+    public AppUser getByEmail(String email) throws DBError {
+
+        try {
+
+            return dB.findByEmail(email).get();
+
+        } catch (Exception error) {
+
+            throw new DBError(new AppUser());
 
         }
     }

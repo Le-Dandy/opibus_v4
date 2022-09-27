@@ -13,6 +13,8 @@ public class WebTemplateInput {
 
     private String text;
 
+    private String value;
+
     private String placeHolder;
 
     private String description;

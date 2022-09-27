@@ -3,6 +3,7 @@ package ch.opibus.opibus.partner.service;
 import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.error.model.Error;
 import ch.opibus.opibus.partner.crud.UserHeadRep;
+import ch.opibus.opibus.partner.dao.AppUser;
 import ch.opibus.opibus.partner.dao.UserHead;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -48,15 +49,21 @@ public class UserHeadService {
 
     public void delete(UserHead userHead) throws DBError {
 
-        try {
+        if(userHead.getId() < 0){
 
-            dB.delete(userHead);
+            try {
 
-        } catch (Exception e) {
+                dB.delete(userHead);
 
-            throw new DBError(userHead, userHead.getId());
+            } catch (Exception e) {
+
+                throw new DBError(userHead, userHead.getId());
+
+            }
 
         }
+
+
 
     }
 
@@ -72,5 +79,18 @@ public class UserHeadService {
 
         }
 
+    }
+
+    public UserHead getByEmail(String email) throws DBError{
+
+        try {
+
+            return dB.findByEmail(email).get();
+
+        } catch (Exception error) {
+
+            throw new DBError(new AppUser());
+
+        }
     }
 }

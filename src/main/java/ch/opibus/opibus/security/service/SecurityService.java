@@ -1,5 +1,6 @@
 package ch.opibus.opibus.security.service;
 
+import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.partner.dao.AppUser;
 import ch.opibus.opibus.partner.service.AppUserService;
 import lombok.AllArgsConstructor;
@@ -18,21 +19,24 @@ public class SecurityService {
         AppUser user = new AppUser();
 
         if(principal != null) {
-            user.setUserName(principal.getName());
+            user.setUsername(principal.getName());
         }
 
         return user;
 
     }
 
-    public String getPrefix(Principal principal) {
+    public String getPrefix(Principal principal) throws DBError {
 
-        String value = null;
+        try{
 
-        if (principal != null) {
-            value = appUserService.getURLPrefixFromUser(principal.getName());
+            return appUserService.getURLPrefixFromUser(principal.getName());
+
+        } catch (DBError error) {
+
+            throw error;
+
         }
 
-        return value;
     }
 }

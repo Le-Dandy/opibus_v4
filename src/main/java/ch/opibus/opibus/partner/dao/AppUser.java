@@ -19,7 +19,7 @@ import java.util.Set;
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Table(name = "app_users" , uniqueConstraints = {@UniqueConstraint(name = "user_email_unique", columnNames = "email")})
+@Table(name = "app_user" , uniqueConstraints = {@UniqueConstraint(name = "user_email_unique", columnNames = "email")})
 @Getter
 @Setter
 @AllArgsConstructor
@@ -37,7 +37,7 @@ public class AppUser implements UserDetails {
     private String email;
 
     @Column(name = "username", nullable = false)
-    private String userName;
+    private String username;
 
     @Column(name = "password", nullable = false, columnDefinition = "TEXT")
     private String password;
@@ -63,7 +63,7 @@ public class AppUser implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userName;
+        return username;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class AppUser implements UserDetails {
         return getMethodName(translate);
     }
 
-    public String getUserName(boolean translate) {
+    public String getUsername(boolean translate) {
         return getMethodName(translate);
     }
 

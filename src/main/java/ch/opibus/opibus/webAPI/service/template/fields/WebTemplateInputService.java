@@ -30,6 +30,7 @@ public class WebTemplateInputService {
 
             return new WebTemplateInput(
                     translation.getText(),
+                    null,
                     translation.getPlaceholder(),
                     translation.getDescription()
 
@@ -57,4 +58,10 @@ public class WebTemplateInputService {
     }
 
 
+    public WebTemplateInput setValue(WebTemplateInput webInput, String value) {
+
+        webInput.setValue(value);
+
+        return webInput;
+    }
 }

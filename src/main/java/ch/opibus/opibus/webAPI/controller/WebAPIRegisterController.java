@@ -1,10 +1,6 @@
 package ch.opibus.opibus.webAPI.controller;
 
-import ch.opibus.opibus.error.model.DBError;
-import ch.opibus.opibus.error.model.Error;
-import ch.opibus.opibus.error.model.TranslationError;
-import ch.opibus.opibus.partner.dao.AppUser;
-import ch.opibus.opibus.partner.dao.Partner;
+import ch.opibus.opibus.webAPI.model.WebPageDefault;
 import ch.opibus.opibus.webAPI.model.WebPageRegister;
 import ch.opibus.opibus.webAPI.service.WebAPIRegisterService;
 import lombok.AllArgsConstructor;
@@ -24,8 +20,16 @@ public class WebAPIRegisterController {
 
 
     @RequestMapping("/register")
-    private String initializeRegisterPage(Model model, Partner partner, AppUser appUser) {
+    private String initializeRegisterPage(Model model, WebPageRegister partner) {
 
+        WebPageDefault pageDefault = webService.checkForRegistrationInput(partner.getPartner(), "EN");
+
+        model.addAttribute("page", pageDefault.getPage());
+        model.addAttribute("emailError", pageDefault.getObject1());
+
+        return pageDefault.getReturnString();
+
+        /*
         try{
 
             model.addAttribute("page", webService.get(appUser, partner, "EN"));
@@ -37,28 +41,54 @@ public class WebAPIRegisterController {
 
         }
 
+         */
+
 
 
 
     }
 
     @PostMapping("/register/submit")
-    private String saveRegistration(Model model, Partner partner) {
+    private String saveRegistration(Model model, WebPageRegister partner) {
 
-        try{
-            webService.save(partner);
+        WebPageDefault pageDefault = webService.checkSubmitRegistration(partner.getPartner(), "EN");
 
-            return "validation_page";
+        model.addAttribute("page", pageDefault.getPage());
+        model.addAttribute("emailError", pageDefault.getObject1());
+        model.addAttribute("inputError", pageDefault.getObject2());
 
-        } catch (DBError error) {
+        return pageDefault.getReturnString();
 
-            if(error.getType() == 2 ){
-                return "redirect:/register";
-            } else {
-                return "error";
-            }
+        /*
+        if (webService.emailCheck() == false) {
+
+            try{
+                webService.save(partner);
+
+                return "validation_page";
+
+            } catch (DBError error) {
+
+                if(error.getType() == 2 ){
+
+                }
+                    model.addAttribute("page", webService.get(partner.getPartner().getAppUser(), partner.getPartner().getPartner(), "EN"));
+                    return "redirect:/register";
+
+                } else {
+
+                    return "error";
+
+                }
+
+        } else {
+
+            model.addAttribute("page", webService.get(partner.getPartner().getAppUser(), partner.getPartner().getPartner(), "EN"));
+            return "redirect:/register";
+
         }
 
+         */
 
 
     }

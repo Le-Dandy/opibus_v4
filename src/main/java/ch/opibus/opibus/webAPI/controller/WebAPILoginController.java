@@ -1,5 +1,6 @@
 package ch.opibus.opibus.webAPI.controller;
 
+import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.security.service.SecurityService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -38,7 +39,7 @@ public class WebAPILoginController {
 
             return "redirect:" + prefix + "/main";
 
-        } catch (Exception e) {
+        } catch (DBError error) {
 
             return "redirect:login";
 

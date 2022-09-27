@@ -1,6 +1,6 @@
 package ch.opibus.opibus.testData.service;
 
-import ch.opibus.opibus.error.model.Error;
+import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.security.model.SecurityRole;
 import ch.opibus.opibus.partner.dao.ColorSettings;
 import ch.opibus.opibus.partner.dao.PartnerSettings;
@@ -18,7 +18,7 @@ import static ch.opibus.opibus.security.model.SecurityRole.*;
 
 @Service
 @AllArgsConstructor
-public class testDataService {
+public class TestDataService {
 
     private final PartnerService partnerService;
     private final TestPageTranslation pageTranslation;
@@ -52,7 +52,7 @@ public class testDataService {
 
             partnerService.create(partner, appUser);
 
-        } catch (Error error ) {
+        } catch (DBError error ) {
 
         }
     }

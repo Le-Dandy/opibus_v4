@@ -17,11 +17,11 @@
                 </div>
                 <div class = "row">
                     <label class="label" th:text="${page.partner.userName.text}">First name</label>
-                    <input type="text" class="input"  required="required" th:field="*{appUser.username}" th:placeholder="${page.partner.userName.placeHolder}" th:description="${page.partner.userName.placeHolder}" >
+                    <input class="input"  required="required" th:field="*{appUser.username}" th:placeholder="${page.partner.userName.placeHolder}" th:description="${page.partner.userName.description}" >
                 </div>
                 <div class = "row">
                     <label class="label" th:text="${page.partner.password.text}">First name</label>
-                    <input type="password" class="input"  required="required" th:field="*{appUser.password}" th:placeholder="${page.partner.password.placeHolder}" th:description="${page.partner.password.placeHolder}" >
+                    <input type="password" class="input"  required="required" th:field="*{appUser.password}" th:placeholder="${page.partner.password.placeHolder}" th:description="${page.partner.password.description}" >
                 </div>
             </div>
             <div class = "Partner Header">
@@ -30,19 +30,22 @@
                 </div>
                 <div class = "row">
                     <label class="label" th:text="${page.partner.firstName.text}">First name</label>
-                    <input type="text" class="input"  required="required" th:field="*{partner.userHead.firstName}" th:placeholder="${page.partner.firstName.placeHolder}" th:description="${page.partner.firstName.placeHolder}" >
+                    <input class="input"  required="required" th:field="*{partner.userHead.firstName}" th:placeholder="${page.partner.firstName.placeHolder}" th:description="${page.partner.firstName.description}" >
                 </div>
                 <div class = "row">
                     <label class="label" th:text="${page.partner.middleName.text}">First name</label>
-                    <input type="text" class="input"  required="required" th:field="*{partner.userHead.middleName}" th:placeholder="${page.partner.middleName.placeHolder}" th:description="${page.partner.middleName.placeHolder}" >
+                    <input class="input"  required="required" th:field="*{partner.userHead.middleName}" th:placeholder="${page.partner.middleName.placeHolder}" th:description="${page.partner.middleName.description}" >
                 </div>
                 <div class = "row">
                     <label class="label" th:text="${page.partner.lastName.text}">First name</label>
-                    <input type="text" class="input"  required="required" th:field="*{partner.userHead.lastName}" th:placeholder="${page.partner.lastName.placeHolder}" th:description="${page.partner.lastName.placeHolder}" >
+                    <input class="input"  required="required" th:field="*{partner.userHead.lastName}" th:placeholder="${page.partner.lastName.placeHolder}" th:description="${page.partner.lastName.description}" >
                 </div>
                 <div class = "row">
+                    <div th:if="${emailError != null}">
+                        <p th:text="emailError"></p>
+                    </div>
                     <label class="label" th:text="${page.partner.email.text}">First name</label>
-                    <input type="text" class="input"  required="required" th:field="*{partner.userHead.email}" th:placeholder="${page.partner.email.placeHolder}" th:description="${page.partner.email.placeHolder}" >
+                    <input class="input"  required="required" th:field="*{partner.userHead.email}" th:placeholder="${page.partner.email.placeHolder}" th:description="${page.partner.email.description}" >
                 </div>
             </div>
 

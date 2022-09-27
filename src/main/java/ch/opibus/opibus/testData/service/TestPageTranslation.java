@@ -29,7 +29,7 @@ public class TestPageTranslation {
         AppUser appUser = new AppUser();
 
         setupText(appUser, "AppUserInputTitle", "User data", null);
-        setupInput(appUser, appUser.getUserName(true), "User name", null, "enter username");
+        setupInput(appUser, appUser.getUsername(true), "User name", null, "enter username");
         setupInput(appUser, appUser.getPassword(true), "Password", null, "enter password");
 
         setupText(partner, "PartnerInputTitle", "Personal data", null);

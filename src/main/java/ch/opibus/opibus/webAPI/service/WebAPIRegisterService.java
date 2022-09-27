@@ -4,7 +4,10 @@ import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.error.model.TranslationError;
 import ch.opibus.opibus.partner.dao.AppUser;
 import ch.opibus.opibus.partner.dao.Partner;
+import ch.opibus.opibus.partner.service.AppUserService;
 import ch.opibus.opibus.partner.service.PartnerService;
+import ch.opibus.opibus.security.service.ValidationTokenService;
+import ch.opibus.opibus.webAPI.model.WebPageDefault;
 import ch.opibus.opibus.webAPI.model.WebPageRegister;
 import ch.opibus.opibus.webAPI.model.template.WebTemplateNavigationBar;
 import ch.opibus.opibus.partner.model.PartnerWebTemplateInput;
@@ -16,61 +19,162 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class WebAPIRegisterService {
 
-    private final WebTemplatePartnerInputService partnerInputService;
+    private final WebTemplatePartnerInputService partnerInput;
     private final PartnerService partnerService;
+    private final AppUserService appUserService;
+    private final WebAPIErrorService errorService;
 
-    public WebPageRegister get(AppUser appUser, Partner partner, String language) throws TranslationError {
+    private final ValidationTokenService validationTokenService;
 
-        try{
-            WebPageRegister page = get(language);
-
-            page.setPartner(mapPartner(page.getPartner(), appUser,  partner));
-
-            return page;
-
-        } catch (TranslationError error) {
-            throw error;
-        }
-
-
-    }
-
-    private PartnerWebTemplateInput mapPartner(PartnerWebTemplateInput pagePartner, AppUser appUser, Partner partner) {
-
-        pagePartner.setAppUser(appUser);
-        pagePartner.setPartner(partner);
-
-        return pagePartner;
-    }
-
-
-    public WebPageRegister get(String language)  throws TranslationError{
+    public WebPageRegister getWebPageRegister(AppUser appUser, Partner partner, String language) throws TranslationError {
 
         try{
 
-            PartnerWebTemplateInput partnerInput =partnerInputService.get(language);
             return new WebPageRegister(
                     new WebTemplateNavigationBar(),
-                    partnerInput
-
+                    partnerInput.get(appUser, partner, language)
             );
 
-        }catch (TranslationError error){
-            throw error;
-        }
 
+        } catch (TranslationError error) {
+
+            throw error;
+
+        }
 
 
     }
 
-    public void save(Partner partner) throws DBError {
+    public void save(WebPageRegister partner) throws DBError {
 
         try{
 
-            partnerService.save(partner);
+            partnerService.create(partner.getPartner().getPartner(), partner.getPartner().getAppUser());
 
         } catch (DBError error) {
+
             throw error;
+
         }
     }
+
+    public WebPageDefault translateRegistrationInput(AppUser appUser, Partner partner, String language) {
+
+        try{
+
+            return new WebPageDefault(
+                    "registration_page",
+                    getWebPageRegister(appUser, partner, language),
+                    null,
+                    null,
+                    null,
+                    null
+            );
+
+        } catch (TranslationError e){
+
+            return errorService.getTranslationError(e);
+
+        }
+
+    }
+
+    public WebPageDefault checkSubmitRegistration(PartnerWebTemplateInput partner, String language) {
+
+        if(partner != null){
+
+            return saveRegistration(partner.getAppUser(), partner.getPartner(), language);
+
+        } else {
+
+            return incompletionForm(partner.getAppUser(), partner.getPartner(), language, 0);
+
+        }
+    }
+    public WebPageDefault saveRegistration(AppUser appUser, Partner partner, String language) {
+
+        if(emailExists(appUser, partner)){
+
+            return incompletionForm(appUser, partner, language, 1);
+
+        } else {
+
+            return validateEmail(appUser, partner , language);
+
+
+        }
+    }
+
+    private WebPageDefault validateEmail(AppUser appUser, Partner partner, String language) {
+
+        validationTokenService.set(appUser);
+
+        return new WebPageDefault(
+                "/register/validation",
+                getWebPageValidation(appUser, partner , language),
+                null,
+                null,
+                null,
+                null
+        );
+
+    }
+
+    private WebPageDefault incompletionForm(AppUser appUser, Partner partner, String language, int errorCase) {
+
+        WebPageDefault page = translateRegistrationInput(appUser, partner, language);
+
+        switch (errorCase) {
+            case 1: page.setObject2("Email already exists");
+            default : page.setObject1("Incomplete data");
+        }
+
+        return page;
+    }
+
+    private boolean emailExists(AppUser appUser, Partner partner) {
+
+        try{
+
+            appUserService.getByEmail(appUser.getEmail());
+
+            return true;
+
+        } catch (DBError appUserError) {
+
+            try{
+
+                partnerService.getByEmail(partner.getUserHead().getEmail());
+
+                return true;
+
+            } catch (DBError partnerError) {
+
+                return false;
+
+            }
+
+        }
+    }
+
+    public WebPageDefault checkForRegistrationInput(PartnerWebTemplateInput partner, String language) {
+
+        if(partner == null){
+
+            return translateRegistrationInput(
+                    new AppUser(),
+                    new Partner(),
+                    language);
+
+        } else {
+
+            return translateRegistrationInput(
+                    partner.getAppUser(),
+                    partner.getPartner(),
+                    language);
+
+        }
+    }
+
+
 }

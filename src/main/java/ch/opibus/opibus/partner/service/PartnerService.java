@@ -5,7 +5,9 @@ import ch.opibus.opibus.error.model.Error;
 import ch.opibus.opibus.partner.crud.PartnerRep;
 import ch.opibus.opibus.partner.dao.AppUser;
 import ch.opibus.opibus.partner.dao.Partner;
+import ch.opibus.opibus.partner.dao.PartnerSettings;
 import ch.opibus.opibus.partner.dao.UserHead;
+import com.sun.xml.bind.v2.runtime.JaxBeanInfo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,110 +22,36 @@ public class PartnerService {
 
     public void create(Partner partner, AppUser appUser) throws DBError {
 
-        if(!appUserService.checkIfExists(appUser)){
+            if(partner.getSettings() == null){
 
-            appUser = appUserService.create(appUser);
+                partner.setSettings(partnerSettingsService.create());
 
-        }
-
-        if(!initialPartnerCheck(partner, appUser)){
-
-            partner = completeUser(appUser, partner);
+            }
 
             try {
 
-                create(appUser.getId(), partner);
+                appUser.setId(appUserService.get(appUser).getId());
+                partner.setId(get(partner).getId());
 
-            } catch(DBError error){
+            } catch (DBError error) {
 
-                throw new DBError(partner, partner.getId());
+                completeUser(appUser, partner);
 
             }
 
+            appUser.setEmail(setEmail(partner, appUser));
+            partner.getUserHead().setEmail(setEmail(partner, appUser));
 
-        } else {
+            try {
 
-            partner = changePartner(appUser, partner);
+                save(partner, appUser);
 
-        }
+            } catch (DBError error) {
 
-    }
-
-    private Partner changePartner(AppUser appUser, Partner partner) throws DBError {
-
-        if(appUser.getEmail() != partner.getUserHead().getEmail()){
-
-            appUser.setEmail(partner.getUserHead().getEmail());
-
-        }
-
-        try {
-
-            appUserService.save(appUser);
-            dB.save(partner);
-
-        } catch(DBError error){
-
-            throw new DBError(partner, partner.getId());
-
-        }
-
-        return partner;
-    }
-
-    private void create(long id, Partner partner) throws DBError {
-
-        partner.setAppUserId(id);
-
-        try{
-
-            partnerSettingsService.create(partner.getSettings());
-
-            userHeadService.create(partner.getUserHead());
-
-            try{
-
-                save(partner);
-
-            } catch(DBError error){
+                delete(partner);
 
                 throw error;
-
             }
-
-        } catch(DBError error) {
-
-            if(error == null){
-
-                error = new DBError(partner, partner.getId());
-
-            }
-
-            throw error;
-
-        }
-    }
-
-    public void save(Partner partner) throws DBError{
-
-        try{
-            dB.save(partner);
-            partnerSettingsService.save(partner.getSettings());
-            userHeadService.save(partner.getUserHead());
-
-        } catch(DBError error){
-
-            if(error == null) {
-
-                throw new DBError(partner, partner.getId());
-
-            } else {
-
-                throw error;
-
-            }
-
-        }
 
     }
 
@@ -157,36 +85,187 @@ public class PartnerService {
         return partner;
     }
 
-    private boolean initialPartnerCheck(Partner partner, AppUser appUser) {
+    private void delete(Partner partner) throws DBError {
 
-        boolean exists = false;
+        if(partner.getId() < 0){
 
-        /*
-        if(appUserService.checkIfExists(appUser)) {
+            try {
+                appUserService.delete(partner.getAppUserId());
+                dB.delete(partner);
+                partnerSettingsService.delete(partner.getSettings());
+                userHeadService.delete(partner.getUserHead());
 
-            exists = true;
+            } catch(DBError error) {
 
-        } else if(userHeadService.checkIfExists(partner.getUserHead())){
+                throw setError(error, partner);
 
-            exists = true;
+            }
 
         }
 
-         */
-
-        return exists;
 
     }
 
-    public Partner get(AppUser appUser) throws DBError {
+    private Partner get(Partner partner) throws DBError {
 
         try{
 
-            return dB.findByAppUserId(appUser.getId()).get();
+            return dB.findById(partner.getId()).get();
 
-        } catch (Exception e) {
+        } catch (Exception e){
 
-            throw new DBError(appUser, appUser.getId());
+            throw new DBError(partner, partner.getId());
+
+        }
+    }
+
+    public Partner get (AppUser appUser) throws DBError {
+
+            try {
+
+                return dB.findByAppUserId(appUser.getId()).get();
+
+            } catch (Exception e) {
+
+                throw new DBError(appUser, appUser.getId());
+            }
+        }
+
+    public void save(Partner partner, AppUser appUser) throws DBError {
+
+        try{
+
+            appUserService.save(appUser);
+            partner.setAppUserId(appUser.getId());
+
+            save(partner);
+
+        } catch (DBError error){
+
+            try{
+
+                delete(partner);
+
+            } catch (DBError deleteError){
+
+                throw  deleteError;
+
+            }
+
+            throw error;
+
+
+        }
+    }
+
+    public void save(Partner partner) throws DBError{
+
+        try{
+
+            partner = save(partner, partner.getSettings());
+            partner = save(partner, partner.getUserHead());
+
+            dB.save(partner);
+
+        } catch(DBError saveError){
+
+            try{
+
+                delete(partner);
+
+            } catch (DBError deleteError) {
+
+                throw setError(deleteError, partner);
+
+            }
+
+            throw setError(saveError, partner);
+
+        }
+
+    }
+
+    private Partner save(Partner partner, PartnerSettings partnerSettings) throws DBError {
+
+        try{
+
+            partnerSettingsService.save(partnerSettings);
+            partner.setSettings(partnerSettings);
+
+            return partner;
+
+        } catch (DBError error) {
+            throw error;
+        }
+
+    }
+
+    private Partner save(Partner partner, UserHead userHead) throws DBError {
+
+        try{
+
+            userHeadService.save(userHead);
+            partner.setUserHead(userHead);
+
+            return partner;
+
+        } catch (DBError error) {
+
+            throw error;
+
+        }
+
+    }
+
+    private String setEmail(Partner partner, AppUser appUser) {
+
+        if(partner.getUserHead().getEmail() == null){
+
+            return appUser.getEmail();
+
+        } else {
+
+            return partner.getUserHead().getEmail();
+
+        }
+    }
+
+    private DBError setError(DBError error, Partner partner) {
+
+        if(error == null) {
+
+            return new DBError(partner, partner.getId());
+
+        } else {
+
+            return error;
+
+        }
+    }
+
+    public Partner getByEmail(String email) throws DBError {
+
+        try{
+
+            return getByUserHead(userHeadService.getByEmail(email));
+
+        } catch (DBError error){
+
+            throw error;
+
+        }
+    }
+
+    private Partner getByUserHead(UserHead userHead) throws DBError {
+
+        try{
+
+            return dB.findByUserHead(userHead).get();
+
+        } catch (Exception e){
+
+            throw new DBError(userHead, userHead.getId());
+
         }
     }
 }
