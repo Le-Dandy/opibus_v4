@@ -14,7 +14,8 @@ import lombok.Setter;
 @NoArgsConstructor
 public class WebPageValidation {
 
-    private WebTemplateNavigationBar navBar;
+    /* private WebTemplateNavigationBar navBar;
 
+     */
     private ValidationTokenWebTemplateInput page;
 }

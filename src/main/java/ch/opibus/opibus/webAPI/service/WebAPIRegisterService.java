@@ -9,6 +9,7 @@ import ch.opibus.opibus.partner.service.PartnerService;
 import ch.opibus.opibus.security.service.ValidationTokenService;
 import ch.opibus.opibus.webAPI.model.WebPageDefault;
 import ch.opibus.opibus.webAPI.model.WebPageRegister;
+import ch.opibus.opibus.webAPI.model.WebPageValidation;
 import ch.opibus.opibus.webAPI.model.template.WebTemplateNavigationBar;
 import ch.opibus.opibus.partner.model.PartnerWebTemplateInput;
 import ch.opibus.opibus.webAPI.service.template.WebTemplatePartnerInputService;
@@ -107,7 +108,7 @@ public class WebAPIRegisterService {
 
     private WebPageDefault validateEmail(AppUser appUser, Partner partner, String language) {
 
-        validationTokenService.set(appUser);
+        validationTokenService.initalize(appUser, partner.getUserHead());
 
         return new WebPageDefault(
                 "/register/validation",
@@ -117,6 +118,13 @@ public class WebAPIRegisterService {
                 null,
                 null
         );
+
+    }
+
+    private WebPageValidation getWebPageValidation(AppUser appUser, Partner partner, String language) {
+
+        return new WebPageValidation(
+                );
 
     }
 

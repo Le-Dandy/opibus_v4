@@ -7,6 +7,11 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+
+import java.sql.Date;
+import java.sql.Time;
+import java.time.LocalDateTime;
+
 import static javax.persistence.GenerationType.IDENTITY;
 
 @Entity
@@ -24,4 +29,8 @@ public class ValidationToken {
     private long id;
 
     private long appUserId;
+
+    private String validationKey;
+
+    private LocalDateTime validTo;
 }
