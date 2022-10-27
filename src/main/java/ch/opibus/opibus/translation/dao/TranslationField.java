@@ -33,5 +33,7 @@ public class TranslationField {
     @OneToMany
     private List<Translation> translation;
 
+    private String url;
+
 
 }

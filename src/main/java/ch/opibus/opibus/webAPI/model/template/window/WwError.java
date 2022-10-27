@@ -1,4 +1,4 @@
-package ch.opibus.opibus.webAPI.model.template;
+package ch.opibus.opibus.webAPI.model.template.window;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class WebTemplatePartnerSettings {
+public class WwError {
 
-    private String userName;
+    private String errorType;
+
+    private String errorMsg;
+
 }

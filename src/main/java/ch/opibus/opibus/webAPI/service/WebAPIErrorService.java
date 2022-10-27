@@ -1,8 +1,8 @@
 package ch.opibus.opibus.webAPI.service;
 
 import ch.opibus.opibus.error.model.TranslationError;
-import ch.opibus.opibus.webAPI.model.WebPageDefault;
-import ch.opibus.opibus.webAPI.model.WebPageError;
+import ch.opibus.opibus.webAPI.model.WebPage;
+import ch.opibus.opibus.webAPI.model.template.window.WwError;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class WebAPIErrorService {
 
-    public WebPageDefault getTranslationError(TranslationError e) {
+    public WebPage getTranslationError(TranslationError e) {
 
-        return new WebPageDefault(
+        return new WebPage(
                 "redirect:/APIerror",
-                new WebPageError("Translation Error","Not entry " + e.getMessage()),
+                new WwError("Translation Error","Not entry " + e.getMessage()),
                 null,
                 null,
                 null,

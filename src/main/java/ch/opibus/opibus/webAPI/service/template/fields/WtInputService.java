@@ -2,23 +2,21 @@ package ch.opibus.opibus.webAPI.service.template.fields;
 
 import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.error.model.TranslationError;
-import ch.opibus.opibus.partner.dao.AppUser;
 import ch.opibus.opibus.translation.dao.Translation;
 import ch.opibus.opibus.translation.service.TranslationService;
-import ch.opibus.opibus.webAPI.model.template.fields.WebTemplateInput;
+import ch.opibus.opibus.webAPI.model.template.fields.WtInput;
+import ch.opibus.opibus.webAPI.model.template.objects.WtNavBarTab;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Method;
-
 @Service
 @AllArgsConstructor
-public class WebTemplateInputService {
+public class WtInputService {
 
     private final TranslationService translationService;
-    private final String type = WebTemplateInput.class.getSimpleName();
+    private final String type = WtInput.class.getSimpleName();
 
-    public WebTemplateInput get(Object object, String field, String language) throws TranslationError {
+    public WtInput get(Object object, String field, String language) throws TranslationError {
 
         try {
 
@@ -28,7 +26,7 @@ public class WebTemplateInputService {
                     type,
                     language);
 
-            return new WebTemplateInput(
+            return new WtInput(
                     translation.getText(),
                     null,
                     translation.getPlaceholder(),
@@ -48,7 +46,7 @@ public class WebTemplateInputService {
 
         try{
 
-            translationService.save(object, field, type, language, text, description, placeholder);
+            translationService.save(object, field, type, language, text, description, placeholder, null);
 
         } catch (DBError error){
 
@@ -58,10 +56,23 @@ public class WebTemplateInputService {
     }
 
 
-    public WebTemplateInput setValue(WebTemplateInput webInput, String value) {
+    public WtInput setValue(WtInput webInput, String value) {
 
         webInput.setValue(value);
 
         return webInput;
+    }
+
+    public void createTestdata(Object object, String method, String fieldText, String description, String placeholder) {
+
+        try{
+
+            save(object, method, "EN", fieldText, description, placeholder);
+            save(object, method, "DE", fieldText, description, placeholder);
+
+        } catch(DBError e){
+
+        }
+
     }
 }

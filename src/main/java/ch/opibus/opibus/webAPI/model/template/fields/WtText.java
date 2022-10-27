@@ -9,13 +9,9 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class WebTemplateInput {
+public class WtText {
 
     private String text;
-
-    private String value;
-
-    private String placeHolder;
 
     private String description;
 

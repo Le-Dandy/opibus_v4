@@ -7,12 +7,12 @@ import ch.opibus.opibus.partner.dao.Partner;
 import ch.opibus.opibus.partner.service.AppUserService;
 import ch.opibus.opibus.partner.service.PartnerService;
 import ch.opibus.opibus.security.service.ValidationTokenService;
-import ch.opibus.opibus.webAPI.model.WebPageDefault;
-import ch.opibus.opibus.webAPI.model.WebPageRegister;
-import ch.opibus.opibus.webAPI.model.WebPageValidation;
-import ch.opibus.opibus.webAPI.model.template.WebTemplateNavigationBar;
-import ch.opibus.opibus.partner.model.PartnerWebTemplateInput;
-import ch.opibus.opibus.webAPI.service.template.WebTemplatePartnerInputService;
+import ch.opibus.opibus.webAPI.model.WebPage;
+import ch.opibus.opibus.webAPI.model.template.window.WwRegister;
+import ch.opibus.opibus.webAPI.model.template.window.WwValidation;
+import ch.opibus.opibus.webAPI.model.template.objects.WtNavigationBar;
+import ch.opibus.opibus.webAPI.model.template.objects.WtPartnerInput;
+import ch.opibus.opibus.webAPI.service.template.objects.WtPartnerInputService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +20,19 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class WebAPIRegisterService {
 
-    private final WebTemplatePartnerInputService partnerInput;
+    private final WtPartnerInputService partnerInput;
     private final PartnerService partnerService;
     private final AppUserService appUserService;
     private final WebAPIErrorService errorService;
 
     private final ValidationTokenService validationTokenService;
 
-    public WebPageRegister getWebPageRegister(AppUser appUser, Partner partner, String language) throws TranslationError {
+    public WwRegister getWebPageRegister(AppUser appUser, Partner partner, String language) throws TranslationError {
 
         try{
 
-            return new WebPageRegister(
-                    new WebTemplateNavigationBar(),
+            return new WwRegister(
+                    new WtNavigationBar(),
                     partnerInput.get(appUser, partner, language)
             );
 
@@ -46,7 +46,7 @@ public class WebAPIRegisterService {
 
     }
 
-    public void save(WebPageRegister partner) throws DBError {
+    public void save(WwRegister partner) throws DBError {
 
         try{
 
@@ -59,11 +59,11 @@ public class WebAPIRegisterService {
         }
     }
 
-    public WebPageDefault translateRegistrationInput(AppUser appUser, Partner partner, String language) {
+    public WebPage translateRegistrationInput(AppUser appUser, Partner partner, String language) {
 
         try{
 
-            return new WebPageDefault(
+            return new WebPage(
                     "registration_page",
                     getWebPageRegister(appUser, partner, language),
                     null,
@@ -80,7 +80,7 @@ public class WebAPIRegisterService {
 
     }
 
-    public WebPageDefault checkSubmitRegistration(PartnerWebTemplateInput partner, String language) {
+    public WebPage checkSubmitRegistration(WtPartnerInput partner, String language) {
 
         if(partner != null){
 
@@ -92,7 +92,7 @@ public class WebAPIRegisterService {
 
         }
     }
-    public WebPageDefault saveRegistration(AppUser appUser, Partner partner, String language) {
+    public WebPage saveRegistration(AppUser appUser, Partner partner, String language) {
 
         if(emailExists(appUser, partner)){
 
@@ -106,11 +106,11 @@ public class WebAPIRegisterService {
         }
     }
 
-    private WebPageDefault validateEmail(AppUser appUser, Partner partner, String language) {
+    private WebPage validateEmail(AppUser appUser, Partner partner, String language) {
 
         validationTokenService.initalize(appUser, partner.getUserHead());
 
-        return new WebPageDefault(
+        return new WebPage(
                 "/register/validation",
                 getWebPageValidation(appUser, partner , language),
                 null,
@@ -121,16 +121,16 @@ public class WebAPIRegisterService {
 
     }
 
-    private WebPageValidation getWebPageValidation(AppUser appUser, Partner partner, String language) {
+    private WwValidation getWebPageValidation(AppUser appUser, Partner partner, String language) {
 
-        return new WebPageValidation(
+        return new WwValidation(
                 );
 
     }
 
-    private WebPageDefault incompletionForm(AppUser appUser, Partner partner, String language, int errorCase) {
+    private WebPage incompletionForm(AppUser appUser, Partner partner, String language, int errorCase) {
 
-        WebPageDefault page = translateRegistrationInput(appUser, partner, language);
+        WebPage page = translateRegistrationInput(appUser, partner, language);
 
         switch (errorCase) {
             case 1: page.setObject2("Email already exists");
@@ -165,7 +165,7 @@ public class WebAPIRegisterService {
         }
     }
 
-    public WebPageDefault checkForRegistrationInput(PartnerWebTemplateInput partner, String language) {
+    public WebPage checkForRegistrationInput(WtPartnerInput partner, String language) {
 
         if(partner == null){
 

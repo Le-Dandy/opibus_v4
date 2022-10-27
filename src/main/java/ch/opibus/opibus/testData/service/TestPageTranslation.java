@@ -3,8 +3,8 @@ package ch.opibus.opibus.testData.service;
 import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.partner.dao.AppUser;
 import ch.opibus.opibus.partner.dao.Partner;
-import ch.opibus.opibus.webAPI.service.template.fields.WebTemplateInputService;
-import ch.opibus.opibus.webAPI.service.template.fields.WebTemplateTextService;
+import ch.opibus.opibus.webAPI.service.template.fields.WtInputService;
+import ch.opibus.opibus.webAPI.service.template.fields.WtTextService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class TestPageTranslation {
 
-    private final WebTemplateInputService input;
-    private final WebTemplateTextService text;
+    private final WtInputService input;
+    private final WtTextService text;
 
     private final String language1 = "EN";
     private final String language2 = "DE";
@@ -54,13 +54,7 @@ public class TestPageTranslation {
 
     private void setupInput(Object object, String method, String fieldText, String description, String placeholder) {
 
-        try{
+        input.createTestdata(object, method, fieldText, description, placeholder, null);
 
-            input.save(object, method, language1, fieldText, description, placeholder);
-            input.save(object, method, language2, fieldText, description, placeholder);
-
-        } catch(DBError e){
-
-        }
     }
 }

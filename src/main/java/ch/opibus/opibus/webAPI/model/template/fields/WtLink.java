@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class WebTemplateLink {
+public class WtLink {
 
     private String href;
 
@@ -17,7 +17,7 @@ public class WebTemplateLink {
 
     private String description;
 
-    public WebTemplateLink(String text, String description) {
+    public WtLink(String text, String description) {
         this.text = text;
         this.description = description;
     }

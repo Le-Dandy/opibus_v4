@@ -1,7 +1,7 @@
 package ch.opibus.opibus.webAPI.controller;
 
-import ch.opibus.opibus.webAPI.model.WebPageDefault;
-import ch.opibus.opibus.webAPI.model.WebPageRegister;
+import ch.opibus.opibus.webAPI.model.WebPage;
+import ch.opibus.opibus.webAPI.model.template.window.WwRegister;
 import ch.opibus.opibus.webAPI.service.WebAPIRegisterService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -20,9 +20,9 @@ public class WebAPIRegisterController {
 
 
     @RequestMapping("/register")
-    private String initializeRegisterPage(Model model, WebPageRegister partner) {
+    private String initializeRegisterPage(Model model, WwRegister partner) {
 
-        WebPageDefault pageDefault = webService.checkForRegistrationInput(partner.getPartner(), "EN");
+        WebPage pageDefault = webService.checkForRegistrationInput(partner.getPartner(), "EN");
 
         model.addAttribute("page", pageDefault.getPage());
         model.addAttribute("emailError", pageDefault.getObject1());
@@ -49,9 +49,9 @@ public class WebAPIRegisterController {
     }
 
     @PostMapping("/register/submit")
-    private String saveRegistration(Model model, WebPageRegister partner) {
+    private String saveRegistration(Model model, WwRegister partner) {
 
-        WebPageDefault pageDefault = webService.checkSubmitRegistration(partner.getPartner(), "EN");
+        WebPage pageDefault = webService.checkSubmitRegistration(partner.getPartner(), "EN");
 
         model.addAttribute("page", pageDefault.getPage());
         model.addAttribute("emailError", pageDefault.getObject1());

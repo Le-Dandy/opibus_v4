@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @AllArgsConstructor
 public class AppUserService implements UserDetailsService {
@@ -27,6 +29,7 @@ public class AppUserService implements UserDetailsService {
 
             AppUser user = get(username);
             user.setGrantedAuthorities(user.getSecurityRole().getGrantedAuthorities());
+            user.setAccountLocked(accountLocked(user));
 
              return user;
 
@@ -36,6 +39,94 @@ public class AppUserService implements UserDetailsService {
         }
 
 
+    }
+
+    private Boolean accountLocked(AppUser user) {
+
+        if(user.getAccountLocked() == true){
+
+            return unlockAccount(user);
+
+        } else {
+
+            return false;
+
+        }
+    }
+
+    private Boolean unlockAccount(AppUser user) {
+
+        if (user.getLockTime() == null) {
+
+            return true;
+
+        } else {
+
+            if(LocalDateTime.now().isAfter(user.getLockTime())){
+
+                return true;
+
+            } else {
+
+                return false;
+
+            }
+
+
+        }
+    }
+
+    public void setFailedLoginAttempt(String email) {
+
+        try{
+
+            setFailedLoginAttempt(getByEmail(email));
+
+        } catch (DBError e) {
+
+        }
+    }
+
+    public void setFailedLoginAttempt(AppUser appUser){
+
+        appUser.setFailedAttempt(appUser.getFailedAttempt() +1);
+        appUser.setAccountLocked(lockAccount(appUser));
+        appUser.setLockTime(lockTime(appUser));
+
+        try{
+
+            save(appUser);
+
+        } catch (DBError e){
+
+        }
+
+    }
+
+    public void resetFailedAttempt(String email) {
+
+
+        try{
+
+            resetFailedAttempt(getByEmail(email));
+
+        } catch (DBError e){
+
+        }
+    }
+
+    public void resetFailedAttempt(AppUser appUser) {
+
+        appUser.setFailedAttempt(0);
+        appUser.setLockTime(null);
+
+        try{
+
+            save(appUser);
+
+        } catch (DBError e){
+
+        }
     }
 
 
@@ -190,4 +281,28 @@ public class AppUserService implements UserDetailsService {
 
         }
     }
+
+    private boolean lockAccount(AppUser appUser) {
+
+        if(appUser.getFailedAttempt() >= 3 ){
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+    }
+
+    private LocalDateTime lockTime(AppUser appUser) {
+
+        if(appUser.getAccountLocked() == true) {
+            return LocalDateTime.now().plusMinutes(15);
+        }
+
+        return null;
+    }
+
+
 }

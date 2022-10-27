@@ -27,7 +27,21 @@ public class TranslationFieldService {
 
     }
 
-    public TranslationField save(TranslationObject translationObject, String fieldName) throws DBError {
+    public TranslationField get(String objectName, String fieldName) throws DBError {
+
+        try {
+
+            return dB.findByObject_ObjectNameAndFieldName(objectName, fieldName).get();
+
+        } catch (Exception e){
+
+            throw new DBError(fieldName);
+
+        }
+
+    }
+
+    public TranslationField save(TranslationObject translationObject, String fieldName, String url) throws DBError {
 
         TranslationField translationField = new TranslationField();
 
@@ -41,6 +55,7 @@ public class TranslationFieldService {
 
                 translationField.setObject(translationObject);
                 translationField.setFieldName(fieldName);
+                translationField.setUrl(url);
 
                 save(translationField);
 

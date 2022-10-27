@@ -1,8 +1,8 @@
 package ch.opibus.opibus.security.model;
 
 import ch.opibus.opibus.security.dao.ValidationToken;
-import ch.opibus.opibus.webAPI.model.template.fields.WebTemplateInput;
-import ch.opibus.opibus.webAPI.model.template.fields.WebTemplateText;
+import ch.opibus.opibus.webAPI.model.template.fields.WtInput;
+import ch.opibus.opibus.webAPI.model.template.fields.WtText;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +16,7 @@ public class ValidationTokenWebTemplateInput {
 
     private ValidationToken token;
 
-    private WebTemplateText tokenTitle;
+    private WtText tokenTitle;
 
-    private WebTemplateInput tokenInput;
+    private WtInput tokenInput;
 }

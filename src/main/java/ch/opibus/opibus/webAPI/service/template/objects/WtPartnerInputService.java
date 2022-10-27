@@ -1,28 +1,28 @@
-package ch.opibus.opibus.webAPI.service.template;
+package ch.opibus.opibus.webAPI.service.template.objects;
 
 import ch.opibus.opibus.error.model.TranslationError;
 import ch.opibus.opibus.partner.dao.AppUser;
 import ch.opibus.opibus.partner.dao.Partner;
-import ch.opibus.opibus.partner.model.PartnerWebTemplateInput;
-import ch.opibus.opibus.webAPI.service.template.fields.WebTemplateInputService;
-import ch.opibus.opibus.webAPI.service.template.fields.WebTemplateTextService;
+import ch.opibus.opibus.webAPI.model.template.objects.WtPartnerInput;
+import ch.opibus.opibus.webAPI.service.template.fields.WtInputService;
+import ch.opibus.opibus.webAPI.service.template.fields.WtTextService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class WebTemplatePartnerInputService {
+public class WtPartnerInputService {
 
-    private final WebTemplateInputService input;
-    private final WebTemplateTextService text;
+    private final WtInputService input;
+    private final WtTextService text;
 
-    public PartnerWebTemplateInput get(String language) throws TranslationError{
+    public WtPartnerInput get(String language) throws TranslationError{
         Partner partner = new Partner();
         AppUser appUser = new AppUser();
 
         try{
 
-            return new PartnerWebTemplateInput(
+            return new WtPartnerInput(
                     partner,
                     appUser,
                     text.get(appUser, "AppUserInputTitle", language),
@@ -42,11 +42,11 @@ public class WebTemplatePartnerInputService {
         }
 
     }
-    public PartnerWebTemplateInput get(AppUser appUser, Partner partner, String language) throws TranslationError{
+    public WtPartnerInput get(AppUser appUser, Partner partner, String language) throws TranslationError{
 
         try {
 
-            PartnerWebTemplateInput partnerInput = get(language);
+            WtPartnerInput partnerInput = get(language);
 
             if(appUser.getEmail() != null){
 
@@ -70,7 +70,7 @@ public class WebTemplatePartnerInputService {
         }
     }
 
-    private PartnerWebTemplateInput mapAppUserValues(PartnerWebTemplateInput partnerInput, AppUser appUser) {
+    private WtPartnerInput mapAppUserValues(WtPartnerInput partnerInput, AppUser appUser) {
 
         partnerInput.setAppUser(appUser);
 
@@ -80,7 +80,7 @@ public class WebTemplatePartnerInputService {
         return partnerInput;
     }
 
-    private PartnerWebTemplateInput mapPartnerValues(PartnerWebTemplateInput partnerInput, Partner partner) {
+    private WtPartnerInput mapPartnerValues(WtPartnerInput partnerInput, Partner partner) {
 
         partnerInput.setPartner(partner);
 

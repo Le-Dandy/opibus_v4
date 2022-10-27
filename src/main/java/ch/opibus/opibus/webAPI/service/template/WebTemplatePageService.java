@@ -1,15 +1,14 @@
 package ch.opibus.opibus.webAPI.service.template;
 
 import ch.opibus.opibus.error.model.DBError;
-import ch.opibus.opibus.error.model.Error;
-import ch.opibus.opibus.webAPI.model.template.WebTemplateNavigationBar;
+import ch.opibus.opibus.webAPI.model.template.objects.WtNavigationBar;
 import ch.opibus.opibus.partner.dao.PartnerSettings;
 import ch.opibus.opibus.partner.service.PartnerSettingsService;
-import ch.opibus.opibus.webAPI.model.template.WebTemplatePage;
 import ch.opibus.opibus.partner.dao.AppUser;
 import ch.opibus.opibus.partner.dao.Partner;
 import ch.opibus.opibus.partner.service.AppUserService;
 import ch.opibus.opibus.partner.service.PartnerService;
+import ch.opibus.opibus.webAPI.service.template.objects.WtNavBarService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +19,7 @@ import java.security.Principal;
 public class WebTemplatePageService {
 
 
-    private final WebTemplateNavBarService webTemplateNavBarService;
+    private final WtNavBarService wtNavBarService;
     private final PartnerSettingsService partnerSettingsService;
     private final PartnerService partnerService;
     private final AppUserService appUserService;
@@ -75,9 +74,9 @@ public class WebTemplatePageService {
 
      */
 
-    public WebTemplateNavigationBar getNavbar(AppUser appUser, String activeTab){
+    public WtNavigationBar getNavbar(AppUser appUser, String activeTab){
 
-        return webTemplateNavBarService.get(appUser, activeTab);
+        return wtNavBarService.get(appUser, activeTab);
     }
 
     public PartnerSettings getSettings(Partner partner){

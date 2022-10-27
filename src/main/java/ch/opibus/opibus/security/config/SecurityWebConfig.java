@@ -1,7 +1,10 @@
 package ch.opibus.opibus.security.config;
 
 import ch.opibus.opibus.partner.service.AppUserService;
+import ch.opibus.opibus.security.service.AuthFailureHandlerService;
+import ch.opibus.opibus.security.service.AuthSuccessHandlerService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -49,6 +52,8 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
 
                 .and().formLogin()
                     .loginPage("/login").permitAll()
+                    .failureHandler(failureHandler)
+                    .successHandler(successHandler)
                     .defaultSuccessUrl("/loginSuccess", true)
                 .and().rememberMe()
                     .tokenValiditySeconds((int) TimeUnit.MINUTES.toSeconds(30))
@@ -70,6 +75,10 @@ public class SecurityWebConfig extends WebSecurityConfigurerAdapter {
         auth.authenticationProvider(daoAuthenticationProvider());
 
     }
+
+    private AuthFailureHandlerService failureHandler;
+
+    private AuthSuccessHandlerService successHandler;
 
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {

@@ -29,12 +29,12 @@ public class TranslationService {
 
     }
 
-    public void save(Object object, String field, String type, String language, String text, String description, String placeholder) throws DBError {
+    public void save(Object object, String field, String type, String language, String text, String description, String placeholder, String url) throws DBError {
 
         try {
 
             TranslationObject translationObject = objectService.save(object.getClass().getSimpleName());
-            TranslationField translationField = fieldService.save(translationObject, field);
+            TranslationField translationField = fieldService.save(translationObject, field, url);
             TranslationType translationType = typeService.save(type);
 
             Translation translation = new Translation();

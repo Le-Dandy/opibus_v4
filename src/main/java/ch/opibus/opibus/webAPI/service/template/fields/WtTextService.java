@@ -4,18 +4,18 @@ import ch.opibus.opibus.error.model.DBError;
 import ch.opibus.opibus.error.model.TranslationError;
 import ch.opibus.opibus.translation.dao.Translation;
 import ch.opibus.opibus.translation.service.TranslationService;
-import ch.opibus.opibus.webAPI.model.template.fields.WebTemplateText;
+import ch.opibus.opibus.webAPI.model.template.fields.WtText;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
-public class WebTemplateTextService {
+public class WtTextService {
 
     private final TranslationService translationService;
-    private static String type = WebTemplateText.class.getSimpleName();
+    private static String type = WtText.class.getSimpleName();
 
-    public WebTemplateText get(Object object, String field, String language) throws TranslationError {
+    public WtText get(Object object, String field, String language) throws TranslationError {
 
         try {
 
@@ -25,7 +25,7 @@ public class WebTemplateTextService {
                     type,
                     language);
 
-            return new WebTemplateText(
+            return new WtText(
                     translation.getText(),
                     translation.getDescription()
             );

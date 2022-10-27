@@ -1,18 +1,15 @@
 package ch.opibus.opibus.partner.dao;
 
 
-import ch.opibus.opibus.error.model.TranslationError;
 import ch.opibus.opibus.security.model.SecurityRole;
-import ch.opibus.opibus.translation.dao.Translation;
-import ch.opibus.opibus.translation.service.TranslationService;
-import ch.opibus.opibus.webAPI.model.template.fields.WebTemplateInput;
-import ch.opibus.opibus.webAPI.service.template.fields.WebTemplateInputService;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Set;
 
@@ -49,9 +46,15 @@ public class AppUser implements UserDetails {
 
     private Boolean accountLocked;
 
+    private LocalDateTime lockTime;
+
     private Boolean accountCredentialsExpired;
 
     private Boolean enabled;
+
+    private int failedAttempt;
+
+
 
     @Transient
     private Set<? extends GrantedAuthority> grantedAuthorities;
